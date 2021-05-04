@@ -1,4 +1,8 @@
 import asyncio
+import logging
+
+logger = logging.getLogger('evb')
+logger.setLevel(logging.DEBUG)
 
 
 class EventBus:
@@ -9,6 +13,9 @@ class EventBus:
         self.commands_handlers = {}
 
     def add_command_handler(self, func, name):
+
+        logger.debug(f"Added handler: {name}")
+
         self.commands_handlers[name] = func
 
     async def call_command(self, name, data):
@@ -16,6 +23,7 @@ class EventBus:
         if name in self.commands_handlers:
             return await self.commands_handlers[name](data)
         else:
+            logger.error(f"Handler: {name} not found")
             return None
 
     def subscribe(self, func, topic):
